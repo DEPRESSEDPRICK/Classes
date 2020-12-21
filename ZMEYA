@@ -1,0 +1,106 @@
+import os
+import time
+import random
+ 
+class Dot:
+    def __init__(self):
+        self.dot = '*'
+ 
+    def add_dot(self):
+        return self.dot
+ 
+class Snake:
+    DEFAULT_MOVE_DIR = 'd'
+ 
+    def __init__(self, x=10, y=10):
+        self.head = '*'
+        self.body = []
+        self.body_x = []
+        self.body_y = []
+        self.x = x
+        self.y = y
+        self.dir = None
+        self.speed = 1
+        self.b = Board(width=40, heigh=20)
+        self.dot = Dot()
+ 
+    def move(self, fruit):
+        self.dir = input()
+        
+        if self.dir == 'a':
+            self.x -= self.speed # left
+        elif self.dir == 'd':
+            self.x += self.speed # right
+        elif self.dir == 'w':
+            self.y -= self.speed # up
+        elif self.dir == 's':
+            self.y += self.speed # down
+ 
+        if self.x == fruit.x and self.y == fruit.y:
+            fruit.x = random.randint(2, self.b.width-1)
+            fruit.y = random.randint(2, self.b.heigh-1)
+            self.body.append(self.dot.add_dot())
+        print(self.body)
+ 
+class Fruit:
+    def __init__(self):
+        self.b = Board(width=40, heigh=20)
+        self.x = random.randint(2, self.b.width-1)
+        self.y = random.randint(2, self.b.heigh-1)
+        self.fruit = 'A'
+ 
+    def rand_position(self, x, y):
+        self.x = x
+        self.y = y
+ 
+    def print_fruit(self):
+        print(self.fruit, end='')
+ 
+class Board:
+    def __init__(self, width=10, heigh=10):
+        self.width = width
+        self.heigh = heigh
+ 
+    def print_board(self, snake, fruit_cord):
+        #os.system('clear')
+        for i in range(self.heigh):
+            for j in range(self.width):
+                if snake.x == j and snake.y == i:
+                    print(snake.head, end='')
+                elif fruit_cord.x == j and fruit_cord.y == i:
+                    fruit_cord.print_fruit()
+                if j == 0:
+                    print('#', end='')
+                elif i == 0:
+                    print('#', end='')
+                elif i == self.heigh-1:
+                    print('#', end='')
+                elif j == self.width-1:
+                    print('#', end='')
+                else:
+                    for k in range(len(snake.body)):
+                        snake.body_x.append(snake.x-1)
+                        snake.body_y.append(snake.y-1)
+                        if snake.body_x[k] == j-1 and snake.body_y[k] == i-1:
+                            print(snake.head, end='')
+                    print(' ', end='')
+            print()
+ 
+class Game:
+    def __init__(self):
+        pass
+ 
+    def start_game(self):
+        board = Board(width=40, heigh=20)
+        snake = Snake(10, 10)
+        fruit = Fruit()
+ 
+        while not ((snake.x > board.width-1 or snake.x < 1) or (snake.y > board.heigh-1 or snake.y < 1)):
+            board.print_board(snake, fruit)
+            snake.move(fruit)
+            time.sleep(0.15)
+        else:
+            print("GAMEOVER!!!")
+ 
+game = Game()
+game.start_game()
